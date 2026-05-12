@@ -1,0 +1,87 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container">
+    <a href="{% url 'product' %}" class="btn btn-light my-3">Retour</a>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            {% if product.image %}
+            <img src="{{product.image.url}}" alt="{{product.name}}" class="img-fluid rounded">
+            {% endif %}
+        </div>
+
+        <div class="col-md-3">
+            <div class="list-group">
+
+                <div class="list-group-item">
+                    <h3>{{product.name}}</h3>
+                </div>
+
+                <div class="list-group-item">
+                    {{product.description}}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+
+                <div class="list-group">
+
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col">Price:</div>
+                            <div class="col">
+                                <strong>{{product.price}}MAD</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col">Statut:</div>
+                            <div class="col">
+                                <strong>{{ product.stock|yesno:"En stock,En rupture" }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post" action="{% url 'add_cart' product.id %}">
+                        {% csrf_token %}
+
+                        <div class="list-group-item">
+                            <div class="row">
+                                <div class="col">Quantité:</div>
+                                <div class="col">
+                                    <input type="number" name="quantity" min="1" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if request.GET.error %}
+                        <div class="list-group-item">
+                            <div class="alert alert-danger">
+                                {{ request.GET.error }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="list-group-item text-center">
+                            <button type="submit" class="btn btn-primary" {% if product.stock %} disabled {% endif %}>
+                                Ajouter au panier
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
